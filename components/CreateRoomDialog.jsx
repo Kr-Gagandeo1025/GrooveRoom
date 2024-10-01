@@ -21,27 +21,71 @@ import { CiCircleCheck } from "react-icons/ci";
 import { useData } from "@/providers/DataContext";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast"
+import { FaSpinner } from "react-icons/fa6";
 
 
 export function CreateRoomDialog() {
-    const {setRoomData,userUid} = useData();
+    const {setRoomData,userUid,setRoomId,setJoinedRoomId} = useData();
     const [roomName,setRoomName] = useState("");
     const [roomDesc,setRoomDesc] = useState("");
     const [roomLimit,setRoomLimit] = useState("");
+    const [loader,setLoader] = useState(false);
     const { toast } = useToast()
-    const handleRoomSave = () => {
-        console.log(roomLimit);
-        if(roomName !== "" && roomDesc !== "" && roomLimit !== ""){
-            setRoomData({
+    const handleRoomSave = async () => {
+      console.log(roomLimit);
+      if(roomName !== "" && roomDesc !== "" && roomLimit !== ""){
+            setLoader(true);
+            const response = await fetch("/api/create-room",{
+              method:'POST',
+              headers:{
+                "Content-Type":"application/json",
+              },
+              body:JSON.stringify({
                 room_name:roomName,
                 room_desc:roomDesc,
                 room_limit:roomLimit,
-                room_id:userUid,
+                user_id:userUid,
+              }),
             })
-            toast({
-              title: "Room Created !",
-              description: "click on enter room and start your playlist party.",
-            })
+            const result = await response.json();
+            if(result.status===200){
+              try{
+                const roomResponse = await fetch("/api/get-room",{
+                  method:'GET',
+                  headers:{
+                    "Content-Type":"application/json",
+                  }
+                })
+                const roomResult = await roomResponse.json();
+                const roomResultData = roomResult.message;
+                console.log(roomResultData);
+                setRoomData({
+                  room_name:roomResultData[0].room_name,
+                  room_desc:roomResultData[0].room_desc,
+                  room_limit:roomResultData[0].room_limit,
+                  user_id:roomResultData[0].creator_id,
+                  people_count:roomResultData[0].people_count,
+                });
+                setRoomId(roomResultData[0].id);
+                setJoinedRoomId(roomResultData[0].id);
+                toast({
+                  title: "Room Created !",
+                  description: "click on enter room and start your playlist party.",
+                })
+              }catch(error){
+                console.log(error);
+                toast({
+                  title: "Room Not Created !",
+                  description: "we are sorry your room cannot be created at the moment.",
+                })
+              }
+            }else{
+              toast({
+                title: "Room Not Created !",
+                description: "we are sorry your room cannot be created at the moment.",
+              })
+            }
+            setLoader(false);
         }else{
             toast({
                 title: "Missing Room Details !",
@@ -49,6 +93,7 @@ export function CreateRoomDialog() {
               })
         }
     }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -92,7 +137,9 @@ export function CreateRoomDialog() {
           </div>
         </div>
         <DialogFooter>
-          <button className="p-2 border bg-black text-white rounded-xl outline-none flex items-center gap-2" onClick={handleRoomSave}><CiCircleCheck className="text-2xl"/>Save Room</button>
+          {!loader?
+            <button className="p-2 border bg-black text-white rounded-xl outline-none flex items-center gap-2" onClick={handleRoomSave}><CiCircleCheck className="text-2xl"/>Save Room</button>
+          :<span className="text-2xl flex animate-spin"><FaSpinner/></span>}
         </DialogFooter>
       </DialogContent>
     </Dialog>

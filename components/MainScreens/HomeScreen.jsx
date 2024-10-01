@@ -4,6 +4,7 @@ import { GiPartyFlags } from "react-icons/gi";
 import { CreateRoomDialog } from "../CreateRoomDialog";
 import { useData } from "@/providers/DataContext";
 import PartyRooms from "../PartyRooms";
+import JoinRoomDialog from "../JoinRoomDialog";
 const HomeScreen = () => {
     const {RoomData} = useData();
   return (
@@ -15,7 +16,7 @@ const HomeScreen = () => {
         <div className="flex gap-6 w-full mt-20 text-2xl">
             {!RoomData ? <>
                 <CreateRoomDialog/>
-                <button className="w-1/2 border border-white py-5 rounded-xl flex items-center gap-4 justify-center"><IoEnterOutline className="text-3xl"/>Join GrooveRoom</button>
+                <JoinRoomDialog/>
             </>:<div className="flex flex-col items-center justify-center w-full">
                 <span className="text-3xl">Woohoo! 😍, You Already have a GrooveRoom Live 🎉</span>
                 <span className="text-lg font-thin">delete the live room to get back the options!</span>  

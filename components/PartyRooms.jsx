@@ -1,27 +1,61 @@
 'use client'
 import { useData } from "@/providers/DataContext";
 import Link from "next/link";
+import { useState } from "react";
+import { FaSpinner } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
 import { MdOutlinePersonOutline } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 const PartyRooms = ({RoomData}) => {
-    const {setRoomData} = useData();
+    const router = useRouter();
+    const [joiningSpinner,setJoiningSpinner] = useState(false);
+    const {setRoomData,roomId,setRoomId,firstname,userUid} = useData();
     const handleRoomDelete = () => {
         setRoomData(null);
+        setRoomId(null);
+    }
+    const handleEnterRoom = async() => {
+      try{
+        setJoiningSpinner(true);
+        const response = await fetch("/api/join-people-list",{
+          method:'POST',
+          headers:{
+            "Content-Type":"application/json",
+          },
+          body:JSON.stringify({
+            user_id:userUid,
+            p_name:firstname,
+            in_room_id:roomId,
+            has_admin_prev:true,
+            role:"admin",
+          }),
+        })
+        const result = await response.json()
+        console.log(result);
+        setJoiningSpinner(false);
+        router.push(`/rooms/${roomId}`);
+      }catch(e){
+        console.log(e);
+      }finally{
+        setJoiningSpinner(false);
+      }
     }
   return (
     <div className='flex border border-white rounded-xl p-4 min-w-[500px]'>
       <div className='flex flex-col items-start justify-center gap-4 w-full'>
-        {/* <span>{RoomData?.room_id}</span> */}
-        <span className='text-sm py-2 px-4 rounded-full border border-gray-500 text-gray-300 self-center'>✨created @ 12:00 hrs </span>
+        {/* <span>{RoomData?.user_id}</span> */}
+        <span className='text-sm py-2 px-4 rounded-full border border-gray-500 text-gray-300 self-center'>{roomId}</span>
         <span className='text-3xl font-bold flex items-center gap-2'><GoDotFill className="animate-pulse text-red-500"/>{RoomData?.room_name} </span>
         <span className='text-xl font-normal'>{RoomData?.room_desc}</span>
         <div className='flex items-center justify-between gap-4 w-full'>
-            <span className="flex items-center gap-2"><MdOutlinePersonOutline className="text-2xl"/>0/{RoomData?.room_limit}</span>
-            <div className="flex">
-              <Link href={`/rooms/${RoomData?.room_id}`}>
-                <button className='px-4 py-2 text-lg bg-white text-black rounded-xl'>Enter Room</button>
-              </Link>
+            <span className="flex items-center gap-2"><MdOutlinePersonOutline className="text-2xl"/>{RoomData?.people_count}/{RoomData?.room_limit}</span>
+            <div className="flex items-center gap-3">
+              {
+                !joiningSpinner?
+                <button className='px-4 py-2 text-lg bg-white text-black rounded-xl' onClick={handleEnterRoom}>Enter Room</button>:
+                <span><FaSpinner className="animate-spin"/></span>
+              }
                 <button className='px-4 py-2 text-lg' onClick={handleRoomDelete}>Delete Room</button>
             </div>
         </div>
