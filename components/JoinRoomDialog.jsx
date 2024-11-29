@@ -17,14 +17,13 @@ import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation";
 import { useData } from "@/providers/DataContext";
 const JoinRoomDialog = () => {
-    const {setJoinedRoomId} = useData();
+    const {setJoinedRoomId,roomId,firstname,userUid} = useData();
     const { toast } = useToast();
     const router = useRouter();
     const [roomCode,setRoomCode] = useState(null);
     const [loader,setLoader] = useState(false);
     const handleRoomJoin = async () => {
         try{
-            setLoader(true);
             console.log("joining room");
             if(roomCode===null){
                 toast({
@@ -34,8 +33,39 @@ const JoinRoomDialog = () => {
                 // setLoader(false);s
                 return;
             }
-            setJoinedRoomId(roomCode);
-            router.push(`/rooms/${roomCode}`);
+            // api code for updating joined list here
+            try{
+              setLoader(true);
+              const response = await fetch("/api/join-people-list",{
+                method:'POST',
+                headers:{
+                  "Content-Type":"application/json",
+                },
+                body:JSON.stringify({
+                  user_id:userUid,
+                  p_name:firstname,
+                  in_room_id:roomCode,
+                  has_admin_prev:false,
+                  role:"member",
+                }),
+              })
+              const result = await response.json()
+              console.log(result);
+              setLoader(false);
+              if(result.status === 200){
+                router.push(`/rooms/${roomId}`);
+              }else{
+                toast({
+                  title: "Unable to Join Room !",
+                  description: "Please try again later.",
+                })
+              }
+            }catch(e){
+              console.log(e);
+            }finally{
+              setJoinedRoomId(roomCode);
+              setLoader(false);
+            }
         }catch(error){
             console.log(error);
         }finally{

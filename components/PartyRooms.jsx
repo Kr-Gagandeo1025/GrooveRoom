@@ -10,10 +10,31 @@ import { useRouter } from "next/navigation";
 const PartyRooms = ({RoomData}) => {
     const router = useRouter();
     const [joiningSpinner,setJoiningSpinner] = useState(false);
+    const [deletingSpinner,setDeletingSpinner] = useState(false);
     const {setRoomData,roomId,setRoomId,firstname,userUid} = useData();
-    const handleRoomDelete = () => {
-        setRoomData(null);
-        setRoomId(null);
+    const handleRoomDelete = async () => {
+      try{
+        setDeletingSpinner(true);
+        const response = await fetch("/api/delete-room",{
+          method:'POST',
+          headers:{
+            "Content-Type":"application/json",
+          },
+          body:JSON.stringify({
+            roomId:roomId
+          }),
+        });
+        const result = await response.json();
+        console.log(result);
+        if(result.status === 200){
+          setRoomData(null);
+          setRoomId(null);
+        }
+      }catch(error){
+        console.log(error);
+      }finally{
+        setDeletingSpinner(false);
+      }
     }
     const handleEnterRoom = async() => {
       try{
@@ -49,14 +70,18 @@ const PartyRooms = ({RoomData}) => {
         <span className='text-3xl font-bold flex items-center gap-2'><GoDotFill className="animate-pulse text-red-500"/>{RoomData?.room_name} </span>
         <span className='text-xl font-normal'>{RoomData?.room_desc}</span>
         <div className='flex items-center justify-between gap-4 w-full'>
-            <span className="flex items-center gap-2"><MdOutlinePersonOutline className="text-2xl"/>{RoomData?.people_count}/{RoomData?.room_limit}</span>
+            <span className="flex items-center gap-2"><MdOutlinePersonOutline className="text-2xl"/>{RoomData?.room_limit}</span>
             <div className="flex items-center gap-3">
               {
                 !joiningSpinner?
                 <button className='px-4 py-2 text-lg bg-white text-black rounded-xl' onClick={handleEnterRoom}>Enter Room</button>:
                 <span><FaSpinner className="animate-spin"/></span>
               }
-                <button className='px-4 py-2 text-lg' onClick={handleRoomDelete}>Delete Room</button>
+              {
+                !deletingSpinner?
+                <button className='px-4 py-2 text-lg' onClick={handleRoomDelete}>Delete Room</button>:
+                <span><FaSpinner className="animate-spin"/></span>
+              }
             </div>
         </div>
       </div>

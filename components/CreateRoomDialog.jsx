@@ -32,7 +32,7 @@ export function CreateRoomDialog() {
     const [loader,setLoader] = useState(false);
     const { toast } = useToast()
     const handleRoomSave = async () => {
-      console.log(roomLimit);
+      // console.log(roomLimit);
       if(roomName !== "" && roomDesc !== "" && roomLimit !== ""){
             setLoader(true);
             const response = await fetch("/api/create-room",{
@@ -58,7 +58,7 @@ export function CreateRoomDialog() {
                 })
                 const roomResult = await roomResponse.json();
                 const roomResultData = roomResult.message;
-                console.log(roomResultData);
+                // console.log(roomResultData);
                 setRoomData({
                   room_name:roomResultData[0].room_name,
                   room_desc:roomResultData[0].room_desc,
@@ -80,6 +80,7 @@ export function CreateRoomDialog() {
                 })
               }
             }else{
+              // console.log(result)
               toast({
                 title: "Room Not Created !",
                 description: "we are sorry your room cannot be created at the moment.",

@@ -1,14 +1,15 @@
 'use client'
-import { useData } from '@/providers/DataContext'
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { FaCircleCheck, FaPeoplePulling, FaPerson, FaRegCopy } from "react-icons/fa6";
 import { MdBlock } from 'react-icons/md';
-const SideBarGrRoom = () => {
-    const {profileimg,firstname,lastname,joinedRoomId} = useData();
+import PartyHoppersHolder from './PartyHoppersHolder';
+import { supabase } from '@/utils/supabase/supabaseClient';
+const SideBarGrRoom = ({data}) => {
     const [copyStatus,setCopyStatus] = useState(false);
+    const [partyHoppers,setPartyHoppers] = useState([]);
     const handleCopyRoomId = () => {
-        navigator.clipboard.writeText(joinedRoomId);
+        navigator.clipboard.writeText(data.joinedRoomId);
         setCopyStatus(true);
         setTimeout(() => {
             setCopyStatus(false);
@@ -22,37 +23,54 @@ const SideBarGrRoom = () => {
                     "Content-Type":"application/json",
                 },
                 body:JSON.stringify({
-                    room_id:joinedRoomId,
+                    room_id:data.joinedRoomId,
                 }),
             })
             const result = await response.json();
             console.log(result);
+            setPartyHoppers(result.message);
         }catch(error){
             console.log(error);
         }
     }
     useEffect(()=>{
         GetListOfPeople();
-    },[])
+        const subscription = supabase.channel('persondata_changes').on('postgres_changes',
+            {event:'INSERT',schema:'public',table:'persondata',filter:`in_room_id=eq.${data.joinedRoomId}`},
+            (payload)=>{
+                console.log('Person added:',payload.new);
+                setPartyHoppers((prevHoppers)=>[...prevHoppers,payload.new]);
+            }
+        ).subscribe();
+
+        // return () => {
+        //     supabase.removeChannel(subscription);
+        // };
+    },[]);
   return (
     <div className="w-fit min-w-[450px] flex flex-col h-full px-4 py-6 border-r border-white justify-between">
         <div className="flex flex-col">
             <span className="text-4xl bold">GrooveRoom.</span>
             <div className='flex flex-col mt-10'>
                 <div className='flex gap-4 items-center'>
-                    <Image src={profileimg} height={50} width={50} alt="user-profile-pic" className='rounded-full'/>
+                    <Image src={data.profileimg} height={50} width={50} alt="user-profile-pic" className='rounded-full'/>
                     <div className='flex flex-col justify-start text-xl'>
-                        <span>{firstname} {lastname} </span>
+                        <span>{data.firstname} {data.lastname} </span>
                         <span className='flex items-center gap-3 text-gray-500 '><FaPerson/> Admin </span>
                     </div>
                 </div>
             </div>
             <div className='flex mt-10 self-center border border-gray-400 p-2 rounded-2xl'>
-                <span className='flex text-xl items-center gap-4'> {copyStatus?<FaCircleCheck/>:<FaRegCopy className='cursor-pointer' onClick={handleCopyRoomId}/>} {joinedRoomId} </span>
+                <span className='flex text-xl items-center gap-4'> {copyStatus?<FaCircleCheck/>:<FaRegCopy className='cursor-pointer' onClick={handleCopyRoomId}/>} {data.joinedRoomId} </span>
             </div>
         </div>
         <div className='flex flex-col items-start text-2xl h-full mt-10'>
-            <span className='flex items-center gap-2 border-b border-white w-full pb-2'>Party Hoppers <FaPeoplePulling/></span>
+            <span className='flex items-center gap-2 border-b border-white w-full pb-2'>Party Hoppers <FaPeoplePulling/> {partyHoppers.length}/{data.roomDetails.room_limit}</span>
+            <div className='w-full flex items-center justify-start flex-col'>
+                {partyHoppers.length!==0&&partyHoppers?.map((ph,key)=>(
+                    <PartyHoppersHolder data={ph} key={key}/>
+                ))}
+            </div>
         </div>
         <div className='flex items-baseline self-center'>
             <button className='text-xl p-3 bg-white text-black rounded-full flex items-center gap-2 font-bold'>END PARTY <MdBlock className='text-red-700'/> </button>
