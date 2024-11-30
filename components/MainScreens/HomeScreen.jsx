@@ -6,7 +6,7 @@ import { useData } from "@/providers/DataContext";
 import PartyRooms from "../PartyRooms";
 import JoinRoomDialog from "../JoinRoomDialog";
 const HomeScreen = () => {
-    const {RoomData} = useData();
+    const {RoomData} = useData(null);
   return (
     <div className="w-full h-full flex flex-col items-center justify-start py-10 px-5">
         <div className="flex flex-col gap-2 items-center">
@@ -14,7 +14,7 @@ const HomeScreen = () => {
             <span className="text-2xl font-thin">Music That Moves with You! 🎶</span>
         </div>
         <div className="flex gap-6 w-full mt-20 text-2xl">
-            {!RoomData ? <>
+            {RoomData===null ? <>
                 <CreateRoomDialog/>
                 <JoinRoomDialog/>
             </>:<div className="flex flex-col items-center justify-center w-full">
@@ -25,7 +25,7 @@ const HomeScreen = () => {
         <div className="flex flex-col w-full mt-28">
             <span className="text-3xl border-b border-white pb-5 w-full flex items-center gap-3 "><GiPartyFlags className="text-4xl"/>Your Active Room</span>
             <div className="flex w-full items-center justify-center flex-col py-5 gap-4">
-                {RoomData == null? <>
+                {RoomData === null? <>
                     <span className="text-2xl font-bold">ohh snap! 🥺 you don&apos;t have a party room 🎵</span>
                     <span className="font-thin text-xl">click 👆 on Create GrooveRoom to host a party! 🎉</span>
                 </>:<div className="w-full flex items-start justify-start">

@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation";
 import { useData } from "@/providers/DataContext";
 const JoinRoomDialog = () => {
-    const {setJoinedRoomId,roomId,firstname,userUid} = useData();
+    const {setJoinedRoomId,setRoomId,firstname,userUid} = useData();
     const { toast } = useToast();
     const router = useRouter();
     const [roomCode,setRoomCode] = useState(null);
@@ -53,7 +53,7 @@ const JoinRoomDialog = () => {
               console.log(result);
               setLoader(false);
               if(result.status === 200){
-                router.push(`/rooms/${roomId}`);
+                router.push(`/rooms/${roomCode}`);
               }else{
                 toast({
                   title: "Unable to Join Room !",
@@ -63,6 +63,7 @@ const JoinRoomDialog = () => {
             }catch(e){
               console.log(e);
             }finally{
+              setRoomId(roomCode);
               setJoinedRoomId(roomCode);
               setLoader(false);
             }
