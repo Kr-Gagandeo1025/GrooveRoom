@@ -10,7 +10,7 @@ const PartyRoomsMain = ({roomdata}) => {
         <span className='text-3xl font-bold'>{roomdata.room_name}</span>
       </div>
       <div className="flex items-center justify-center h-full w-full pt-4">
-        <div className="flex flex-col h-full items-center justify-between w-[60%]">
+        <div className="flex flex-col h-full items-center justify-start w-[60%]">
           <MusicPlayer/>
           <MusicSearch/>
         </div>

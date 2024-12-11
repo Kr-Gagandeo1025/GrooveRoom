@@ -29,18 +29,33 @@ const MusicQueue = () => {
 
   useEffect(()=>{
     GetMusicQueue();
-    const subscription = supabase.channel('music_queue_changes').on('postgres_changes',
+    const subscription1 = supabase.channel('music_queue_changes').on('postgres_changes',
       {event:'INSERT',schema:'public',table:'musicqueuedata',filter:`song_room_id=eq.${roomId}`},
       (payload)=>{
         console.log('Music Queued:',payload.new);
         setMusicQueue((prevMusicQueue)=>[...prevMusicQueue,payload.new]);
       }
     ).subscribe();
+   
+  },[])
+  const updateQueueVotes = (payload) => {
+    setMusicQueue((prevData)=>
+      prevData.map((music)=>(music.music_id === payload.new.music_id ? payload.new : music))
+    )
+  }
+  useEffect(()=>{
+    const subscription2 = supabase.channel('music_queue_upvotes').on('postgres_changes',
+      {event:'UPDATE',schema:'public',table:'musicqueuedata',filter:`song_room_id=eq.${roomId}`},
+      (payload)=>{
+        console.log('Music Upvoted:',payload.new);
+        updateQueueVotes(payload);
+      }
+    ).subscribe();
   },[])
 
   return (
     <div className="h-full flex p-2 items-start justify-start flex-col bg-gray-800 w-full rounded-xl">
-      <span className='text-2xl flex w-full items-center gap-3'>Music Queue <FaMusic/></span>
+      <span className='text-xl flex w-full items-center gap-3'>Music Queue <FaMusic/></span>
       <div className='flex w-full flex-col justify-start items-center'>
       {musicQueue.length!==0&&musicQueue.map((queue,key)=>(
         <MusicQueueCard data={queue} key={key}/>

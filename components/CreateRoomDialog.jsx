@@ -98,7 +98,7 @@ export function CreateRoomDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="w-1/2 bg-white rounded-xl py-5 text-black flex items-center gap-4 justify-center"><FiPlusSquare className="text-3xl"/>Create GrooveRoom</button>
+        <button className="w-1/2 bg-white rounded-xl py-5 text-black text-xl flex items-center gap-4 justify-center"><FiPlusSquare className="text-xl"/>Create GrooveRoom</button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

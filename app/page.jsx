@@ -1,5 +1,8 @@
 // import { useState, useEffect } from "react";
 // import { supabase } from "@/utils/supabase/supabaseClient";
+import AboutSection from "@/components/AboutSection";
+import ExploreSection from "@/components/ExploreSection";
+import FooterSection from "@/components/FooterSection";
 import HeroSection from "@/components/HeroSection";
 import LandingNavBar from "@/components/LandingNavBar";
 import {auth} from "@clerk/nextjs/server";
@@ -26,12 +29,15 @@ export default async function Home() {
   //   console.log(rooms);
   // }, []);
   return (
-    <main className="w-screen h-screen bg-black">
+    <main className="w-screen min-h-screen bg-black">
       <div className="fixed">
         <LandingNavBar isSigned={userId}/>
       </div>
       <div className="pt-[150px]">
         <HeroSection/>
+        <AboutSection/>
+        <ExploreSection/>
+        <FooterSection/>
       </div>
     </main>
   );

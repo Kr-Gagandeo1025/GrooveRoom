@@ -11,7 +11,7 @@ const AuthScreen = () => {
         </Link>
       </div>
       <div className='mt-20 flex'>
-        <span className='text-9xl font-bold'>GrooveRoom.</span>
+        <span className='text-6xl font-bold'>GrooveRoom.</span>
       </div>
       <div className='flex flex-col mt-20 w-fit'>
         <span className='text-8xl font-bold'>Tune In.</span>

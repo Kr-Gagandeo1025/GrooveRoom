@@ -2,7 +2,7 @@ import { MdPerson } from "react-icons/md"
 
 const PartyHoppersHolder = ({data}) => {
   return (
-    <div className="text-white w-[90%] p-2 border-b border-gray-400 flex text-2xl items-baseline justify-start gap-3">
+    <div className="text-white w-[90%] p-2 border-b border-gray-400 flex text-xl items-baseline justify-start gap-3">
         <MdPerson/>
         <span>
             {data?.p_name}

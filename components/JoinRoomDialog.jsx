@@ -36,28 +36,48 @@ const JoinRoomDialog = () => {
             // api code for updating joined list here
             try{
               setLoader(true);
-              const response = await fetch("/api/join-people-list",{
+              const roomResponse = await fetch("/api/get-room-details",{
                 method:'POST',
                 headers:{
                   "Content-Type":"application/json",
                 },
                 body:JSON.stringify({
-                  user_id:userUid,
-                  p_name:firstname,
-                  in_room_id:roomCode,
-                  has_admin_prev:false,
-                  role:"member",
-                }),
+                  roomId:roomCode
+                })
               })
-              const result = await response.json()
-              console.log(result);
-              setLoader(false);
-              if(result.status === 200){
-                router.push(`/rooms/${roomCode}`);
+              const roomResult = await roomResponse.json();
+              const roomResultStatus = roomResult.status;
+              const roomResultData = roomResult.message;
+              console.log(roomResultData);
+              if(roomResultStatus!==500 && roomResultData[0].people_count < roomResultData[0].room_limit){
+                const response = await fetch("/api/join-people-list",{
+                  method:'POST',
+                  headers:{
+                    "Content-Type":"application/json",
+                  },
+                  body:JSON.stringify({
+                    user_id:userUid,
+                    p_name:firstname,
+                    in_room_id:roomCode,
+                    has_admin_prev:false,
+                    role:"member",
+                  }),
+                })
+                const result = await response.json()
+                console.log(result);
+                setLoader(false);
+                if(result.status === 200){
+                  router.push(`/rooms/${roomCode}`);
+                }else{
+                  toast({
+                    title: "Unable to Join Room !",
+                    description: "Please try again later.",
+                  })
+                }
               }else{
                 toast({
-                  title: "Unable to Join Room !",
-                  description: "Please try again later.",
+                  title: "Not Allowed to Join !",
+                  description: "Room is either full or does not exist.",
                 })
               }
             }catch(e){
@@ -76,7 +96,7 @@ const JoinRoomDialog = () => {
   return (
       <Dialog>
       <DialogTrigger asChild>
-        <button className="w-1/2 border border-white py-5 rounded-xl flex items-center gap-4 justify-center"><IoEnterOutline className="text-3xl"/>Join GrooveRoom</button>
+        <button className="w-1/2 border border-white py-5 rounded-xl flex items-center gap-4 justify-center text-xl"><IoEnterOutline className="text-xl"/>Join GrooveRoom</button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

@@ -8,6 +8,7 @@ const MusicSearch = () => {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchSpinner, setSearchSpinner] = useState(false);
+  const [musicAddSpinner,setMusicAddSpinner] = useState(false);
   const {roomId} = useData();
 
   const fetchYouTubeResults = async () => {
@@ -34,6 +35,7 @@ const MusicSearch = () => {
   }
 
   const addMusicToQueue = async(data) => {
+    setMusicAddSpinner(true)
     const response = await fetch("/api/add-music-to-queue",{
       method:'POST',
       headers:{
@@ -45,10 +47,11 @@ const MusicSearch = () => {
       })
     })
     const result = await response.json();
-    console.log(result);
+    // console.log(result);
+    setMusicAddSpinner(false)
   }
   return (
-    <div className="flex h-[50%] flex-col items-center justify-end w-full pr-4">
+    <div className="flex h-full flex-col items-center justify-end w-full pr-4">
       <div className='flex w-full gap-2'>
         <input type="text" 
         className="rounded-xl border border-gray-500 p-4 w-full bg-transparent text-white" 
@@ -57,7 +60,7 @@ const MusicSearch = () => {
         onChange={handleQueryChanges}/>
         <button className='text-3xl border border-gray-500 p-4 rounded-xl' onClick={fetchYouTubeResults}> <FiSearch/> </button>
       </div>
-        <div className="m-3 px-4 pt-10 bg-gray-800 w-full rounded-xl flex flex-col overflow-scroll items-center justify-center">
+        <div className="m-3 px-4 pt-4 bg-gray-800 w-full rounded-xl flex flex-col overflow-scroll items-center justify-start h-[300px]">
           {searchSpinner === true &&<FaSpinner className='text-2xl animate-spin'/>}
           {searchResults.length===0?
           <span className="text-gray-400 text-xl">No songs to show..</span>
@@ -70,9 +73,11 @@ const MusicSearch = () => {
                 className='h-[70px] w-[70px]'
               />
               <span>{result.snippet.title.slice(0,50)}...</span>
-              <button className='text-2xl rounded-full border border-gray-500 p-2' onClick={()=>{addMusicToQueue(result)}}>
-                <IoAdd/>
-              </button>
+              {musicAddSpinner?<FaSpinner className='animate-spin'/>:
+                <button className='text-2xl rounded-full border border-gray-500 p-2' onClick={()=>{addMusicToQueue(result)}}>
+                  <IoAdd/>
+                </button>
+              }
             </div>
           ))
           }
