@@ -85,11 +85,6 @@ const MusicPlayer = ({RoomID}) => {
     ).subscribe();
     updatePlayerData();
     setPlayerLoading(false);
-
-    if(iframeRef){
-      sendMessageToIframe('playVideo'); 
-      setPlayerState(true);
-    }
     // todo - set the player data on db to the data we just got
   }
   // todo - create a broadcast for the music player
@@ -138,7 +133,7 @@ const MusicPlayer = ({RoomID}) => {
   const onPlayerStateChange = (event) => {
     if (event.data === window.YT.PlayerState.ENDED) {
       console.log('Video has ended');
-      // Trigger next track logic here
+      updatePlayerData();
     }
   };
 // write the next track / update track logic here.
