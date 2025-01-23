@@ -58,6 +58,22 @@ export function CreateRoomDialog() {
                 })
                 const roomResult = await roomResponse.json();
                 const roomResultData = roomResult.message;
+                if(roomResult.status===200){
+                  // to create player route
+                  const playerResponse = await fetch("/api/create-player",{
+                    method:'POST',
+                    headers:{
+                      "Content-Type":"application/json",
+                    },
+                    body:JSON.stringify({
+                      roomId:roomResultData[0].id,
+                    }),
+                  })
+                  const playerResult = await playerResponse.json();
+                  console.log(playerResult);
+                }else{
+                  throw new Error("Room not created");
+                }
                 // console.log(roomResultData);
                 setRoomData({
                   room_name:roomResultData[0].room_name,
@@ -80,7 +96,7 @@ export function CreateRoomDialog() {
                 })
               }
             }else{
-              // console.log(result)
+              console.log(result)
               toast({
                 title: "Room Not Created !",
                 description: "we are sorry your room cannot be created at the moment.",

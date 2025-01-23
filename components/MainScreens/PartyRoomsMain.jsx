@@ -11,7 +11,7 @@ const PartyRoomsMain = ({roomdata}) => {
       </div>
       <div className="flex items-center justify-center h-full w-full pt-4">
         <div className="flex flex-col h-full items-center justify-start w-[60%]">
-          <MusicPlayer/>
+          <MusicPlayer RoomID={roomdata.id}/>
           <MusicSearch/>
         </div>
         <div className="flex h-full items-center justify-center w-[40%] pr-4 pb-3">

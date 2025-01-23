@@ -24,6 +24,7 @@ const Room = () => {
           console.log(roomResultData);
           if(roomResultData.lenght !== 0){
               setRoomDetails({
+                id:roomResultData[0].id,
                 room_name:roomResultData[0].room_name,
                 room_limit:roomResultData[0].room_limit,
                 people_count:roomResultData[0].people_count,

@@ -96,7 +96,7 @@ const SideBarGrRoom = ({data}) => {
         <div className='flex items-baseline self-center'>
             {
                 exitLoader?
-                <span  className='text-xl p-3 bg-white text-black rounded-full flex items-center gap-2 font-bold'><FaSpinner/></span>
+                <span  className='text-xl p-3 bg-white text-black rounded-full flex items-center gap-2 font-bold animate-spin'><FaSpinner/></span>
                 :
                 <button className='text-xl p-3 bg-white text-black rounded-full flex items-center gap-2 font-bold' onClick={HandleRoomExit}>LEAVE PARTY <MdBlock className='text-red-700'/> </button>
             }

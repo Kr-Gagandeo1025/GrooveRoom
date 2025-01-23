@@ -25,7 +25,7 @@ const MusicQueue = () => {
     }catch(error){
         console.log(error);
     }
-}
+  }
 
   useEffect(()=>{
     GetMusicQueue();
