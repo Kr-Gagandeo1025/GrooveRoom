@@ -48,7 +48,7 @@ const MusicPlayer = ({RoomID}) => {
       }
     )
     subscription1.subscribe();
-    // updatePlayerData();
+    updatePlayerData();
   },[])
   // todo - get the music queue data and set the player data
   const updatePlayerData = async() => {
@@ -84,9 +84,13 @@ const MusicPlayer = ({RoomID}) => {
       }
     ).subscribe();
     updatePlayerData();
-    sendMessageToIframe('playVideo');
-    sendMessageToIframe('playVideo');
     setPlayerLoading(false);
+
+    // a timeout of 1 sec
+    setTimeout(()=>{
+      sendMessageToIframe('playVideo');
+      setPlayerState(true);
+    },2000);
     // todo - set the player data on db to the data we just got
   }
   // todo - create a broadcast for the music player
@@ -108,6 +112,10 @@ const MusicPlayer = ({RoomID}) => {
   //   }
   // }
 
+  const playNextTrack = async() => {
+    OnPlayPlayerData();
+  }
+
   const sendMessageToIframe = (action) => {
     if (iframeRef.current) {
       iframeRef.current.contentWindow.postMessage(
@@ -127,7 +135,7 @@ const MusicPlayer = ({RoomID}) => {
   };
 
   const pauseMusic = () => {
-    sendMessageToIframe('playVideo');
+    sendMessageToIframe('pauseVideo');
     setPlayerState(false);
   };
 
@@ -135,46 +143,47 @@ const MusicPlayer = ({RoomID}) => {
   const onPlayerStateChange = (event) => {
     if (event.data === window.YT.PlayerState.ENDED) {
       console.log('Video has ended');
-      updatePlayerData();
+      updatePlayerData()
     }
   };
 // write the next track / update track logic here.
 
   
   return (
-      <div className="flex w-fit items-start justify-center gap-10 px-5 bg-white bg-opacity-15 backdrop-filter backdrop-blur-xl py-2 mt-5 mr-4 rounded-xl">
-        {playerData?.thumbnail && <img src={playerData?.thumbnail} className="w-[200px] h-[200px] rounded-lg"/>}
+      <div className="flex flex-col w-fit items-start justify-start px-5 bg-white bg-opacity-15 backdrop-filter backdrop-blur-xl py-2 mt-5 mr-4 rounded-xl">
+        <div className="flex gap-3">
+          {/* {playerData?.thumbnail && <img src={playerData?.thumbnail} className="w-[100px] h-[100px] rounded-lg"/>} */}
+          {playerData?.isPlaying &&
+            <iframe ref={iframeRef} className="w-[300px] h-full" src={`https://www.youtube.com/embed/${playerData?.current_track_id}?enablejsapi=1`} title="Music player YT"  allow="autoplay;"/>
+          }  
         <div className="flex flex-col h-full justify-start items-start">
           <span className="text-xl font-bold">{playerData?.title?.slice(0,50) || "Click on Play to Start Streaming"}... </span>
           {/* youtube iframe */}
-          {!playerData?.isPlaying && <button onClick={OnPlayPlayerData} className="mt-2">
-            {!playerLoading?<span className="text-sm text-black cursor-pointer bg-white p-2 rounded-full">Start Global</span>:<FaSpinner className="text-6xl animate-spin"/>}
+          {!playerData?.isPlaying ? <button onClick={OnPlayPlayerData} className="mt-2">
+            {!playerLoading?<span className="text-sm text-black cursor-pointer bg-white p-2 rounded-full">Start Player</span>:<FaSpinner className="text-6xl animate-spin"/>}
           </button>
-          // :
-          // <button className="mt-2" onClick={onPausePlayerData}>
-          //   {!playerLoading?<span className="text-sm cursor-pointer text-black bg-white p-2 rounded-full">Stop Global</span>:<FaSpinner className="text-6xl animate-spin"/>}
-          // </button>
-          }
-          {playerData?.isPlaying &&
-            <iframe ref={iframeRef} className="w-[0px] h-[0px]" src={`https://www.youtube.com/embed/${playerData?.current_track_id}?enablejsapi=1`} title="Music player YT"  allow="autoplay;"/>
-          }
-          <span className=" flex mt-10 w-full items-center justify-between">
-            {playerState? 
-            <button onClick={pauseMusic}>
-              <FaPauseCircle className="text-6xl cursor-pointer"/> 
-            </button>
-              :
-            <button onClick={playMusic}>
-              <FaPlayCircle className="text-6xl cursor-pointer"/>
-            </button>
-            }
-            <span className="text-xs w-[50%]">
-              *start/stop global toggles music for everyone !
-              <br />
-              *play/pause button toggles local music !
-            </span>
-          </span>
+          :
+          <button className="mt-2" onClick={playNextTrack}>
+            {!playerLoading?<span className="text-sm cursor-pointer text-black bg-white p-2 rounded-full">Play Next</span>:<FaSpinner className="text-6xl animate-spin"/>}
+          </button>}
         </div>
+        </div>
+        <span className=" flex mt-10 w-full items-center justify-between">
+          {playerState? 
+          <button onClick={pauseMusic}>
+            <FaPauseCircle className="text-6xl cursor-pointer"/> 
+          </button>
+            :
+          <button onClick={playMusic}>
+            <FaPlayCircle className="text-6xl cursor-pointer"/>
+          </button>
+          }
+          <span className="text-xs w-[50%]">
+            *start/stop global toggles music for everyone !
+            <br />
+            *play/pause button toggles local music !
+          </span>
+        </span>
       </div>
   )
 }
