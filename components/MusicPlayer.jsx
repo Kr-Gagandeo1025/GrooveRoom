@@ -84,27 +84,29 @@ const MusicPlayer = ({RoomID}) => {
       }
     ).subscribe();
     updatePlayerData();
+    sendMessageToIframe('playVideo');
+    sendMessageToIframe('playVideo');
     setPlayerLoading(false);
     // todo - set the player data on db to the data we just got
   }
   // todo - create a broadcast for the music player
 
   // function to set isPlaying to false for the global stop
-  const onPausePlayerData = async() => {
-    setPlayerLoading(true);
-    const {data:pld,error:plderr} = await supabase.from('playerdata').update({
-      isPlaying:false,
-    }).eq('room_id',RoomID);
-    if(plderr){
-      console.log(plderr);
-      setPlayerLoading(false);
-      return;
-    }else{
-      console.log(pld);
-      setPlayerLoading(false);
-      return;
-    }
-  }
+  // const onPausePlayerData = async() => {
+  //   setPlayerLoading(true);
+  //   const {data:pld,error:plderr} = await supabase.from('playerdata').update({
+  //     isPlaying:false,
+  //   }).eq('room_id',RoomID);
+  //   if(plderr){
+  //     console.log(plderr);
+  //     setPlayerLoading(false);
+  //     return;
+  //   }else{
+  //     console.log(pld);
+  //     setPlayerLoading(false);
+  //     return;
+  //   }
+  // }
 
   const sendMessageToIframe = (action) => {
     if (iframeRef.current) {
@@ -125,7 +127,7 @@ const MusicPlayer = ({RoomID}) => {
   };
 
   const pauseMusic = () => {
-    sendMessageToIframe('pauseVideo');
+    sendMessageToIframe('playVideo');
     setPlayerState(false);
   };
 
@@ -145,13 +147,14 @@ const MusicPlayer = ({RoomID}) => {
         <div className="flex flex-col h-full justify-start items-start">
           <span className="text-xl font-bold">{playerData?.title?.slice(0,50) || "Click on Play to Start Streaming"}... </span>
           {/* youtube iframe */}
-          {!playerData?.isPlaying ? <button onClick={OnPlayPlayerData} className="mt-2">
+          {!playerData?.isPlaying && <button onClick={OnPlayPlayerData} className="mt-2">
             {!playerLoading?<span className="text-sm text-black cursor-pointer bg-white p-2 rounded-full">Start Global</span>:<FaSpinner className="text-6xl animate-spin"/>}
           </button>
-          :
-          <button className="mt-2" onClick={onPausePlayerData}>
-            {!playerLoading?<span className="text-sm cursor-pointer text-black bg-white p-2 rounded-full">Stop Global</span>:<FaSpinner className="text-6xl animate-spin"/>}
-          </button>}
+          // :
+          // <button className="mt-2" onClick={onPausePlayerData}>
+          //   {!playerLoading?<span className="text-sm cursor-pointer text-black bg-white p-2 rounded-full">Stop Global</span>:<FaSpinner className="text-6xl animate-spin"/>}
+          // </button>
+          }
           {playerData?.isPlaying &&
             <iframe ref={iframeRef} className="w-[0px] h-[0px]" src={`https://www.youtube.com/embed/${playerData?.current_track_id}?enablejsapi=1`} title="Music player YT"  allow="autoplay;"/>
           }
