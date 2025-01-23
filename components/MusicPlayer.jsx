@@ -23,6 +23,9 @@ const MusicPlayer = ({RoomID}) => {
         },
       });
     };
+  },[])
+
+  useEffect(()=>{
     //supabase subscription
     console.log(RoomID,"useeffect running");
     const subscription1 = supabase.channel('music_player_changes').on('postgres_changes',
@@ -59,13 +62,13 @@ const MusicPlayer = ({RoomID}) => {
   const OnPlayPlayerData = () => {
     // console.log(RoomID);
     setPlayerLoading(true);
-    const subscription1 = supabase.channel('music_player_changes').on('postgres_changes',
-      {event:'UPDATE',schema:'public',table:'playerdata',filter:`room_id=eq.${RoomID}`},
-      (payload)=>{
-        console.log('Player Updated:',payload.new);
-        setPlayerData(payload.new);
-      }
-    ).subscribe();
+    // const subscription1 = supabase.channel('music_player_changes').on('postgres_changes',
+    //   {event:'UPDATE',schema:'public',table:'playerdata',filter:`room_id=eq.${RoomID}`},
+    //   (payload)=>{
+    //     console.log('Player Updated:',payload.new);
+    //     setPlayerData(payload.new);
+    //   }
+    // ).subscribe();
     updatePlayerData();
     setPlayerLoading(false);
     // todo - set the player data on db to the data we just got
