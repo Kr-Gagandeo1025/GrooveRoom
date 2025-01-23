@@ -28,13 +28,27 @@ const MusicPlayer = ({RoomID}) => {
   useEffect(()=>{
     //supabase subscription
     console.log(RoomID,"useeffect running");
+    // get player data from db
+    const getPlayerData = async() => {
+      const {data:pd,error:pe} = await supabase.from('playerdata').select('*').eq('room_id',RoomID);
+      if(pe){
+        console.log(pe);
+        return;
+      }else{
+        console.log(pd);
+        setPlayerData(pd[0]);
+      }
+    }
+    getPlayerData();
     const subscription1 = supabase.channel('music_player_changes').on('postgres_changes',
       {event:'UPDATE',schema:'public',table:'playerdata',filter:`room_id=eq.${RoomID}`},
       (payload)=>{
         console.log('Player Updated:',payload.new);
         setPlayerData(payload.new);
       }
-    ).subscribe();
+    )
+    subscription1.subscribe();
+    // updatePlayerData();
   },[])
   // todo - get the music queue data and set the player data
   const updatePlayerData = async() => {
@@ -45,10 +59,10 @@ const MusicPlayer = ({RoomID}) => {
     }else{
       console.log(md);
       const {data:pld,error:plderr} = await supabase.from('playerdata').update({
-        current_track_id:md[0].music_id,
+        current_track_id:md[0]?.music_id,
         isPlaying:true,
-        thumbnail:md[0].song_thumbnail,
-        title:md[0].song_title,
+        thumbnail:md[0]?.song_thumbnail,
+        title:md[0]?.song_title,
       }).eq('room_id',RoomID);// todo - insert the data we got from the music queue
       if(plderr){
         console.log(plderr);
@@ -62,15 +76,20 @@ const MusicPlayer = ({RoomID}) => {
   const OnPlayPlayerData = () => {
     // console.log(RoomID);
     setPlayerLoading(true);
-    // const subscription1 = supabase.channel('music_player_changes').on('postgres_changes',
-    //   {event:'UPDATE',schema:'public',table:'playerdata',filter:`room_id=eq.${RoomID}`},
-    //   (payload)=>{
-    //     console.log('Player Updated:',payload.new);
-    //     setPlayerData(payload.new);
-    //   }
-    // ).subscribe();
+    const subscription1 = supabase.channel('music_player_changes').on('postgres_changes',
+      {event:'UPDATE',schema:'public',table:'playerdata',filter:`room_id=eq.${RoomID}`},
+      (payload)=>{
+        console.log('Player Updated:',payload.new);
+        setPlayerData(payload.new);
+      }
+    ).subscribe();
     updatePlayerData();
     setPlayerLoading(false);
+
+    if(iframeRef){
+      sendMessageToIframe('playVideo'); 
+      setPlayerState(true);
+    }
     // todo - set the player data on db to the data we just got
   }
   // todo - create a broadcast for the music player
