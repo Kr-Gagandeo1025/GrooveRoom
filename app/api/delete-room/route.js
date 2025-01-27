@@ -16,6 +16,11 @@ export async function POST(req){
         }
 
         if(BodyData){
+            // delete the songs that were in the room
+            const {data:deletedSongs,error:songError} = await supabase.from('musicqueuedata').delete().eq('song_room_id',BodyData.roomId);
+            if(songError){
+                return NextResponse.json({ message: 'Error Deleting Room' ,error,'status':500});
+            }
             const {data,error}  = await supabase.from('roomsdata').delete().eq('id', BodyData.roomId);
             if(error){
                 return NextResponse.json({ message: 'Error Deleting Room' ,error,'status':500});

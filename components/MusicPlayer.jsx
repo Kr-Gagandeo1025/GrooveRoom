@@ -86,7 +86,7 @@ const MusicPlayer = ({RoomID}) => {
     updatePlayerData();
     setPlayerLoading(false);
 
-    // a timeout of 1 sec
+    // a timeout of 2 sec
     setTimeout(()=>{
       sendMessageToIframe('playVideo');
       setPlayerState(true);

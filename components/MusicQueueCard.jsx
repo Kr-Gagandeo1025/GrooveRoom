@@ -32,6 +32,28 @@ const MusicQueueCard = ({data}) => {
       })
     }
   }
+  const handleRemoveMusic = async() => {
+    const response = await fetch("/api/remove-music-from-queue",{
+      method:'POST',
+      headers:{
+        "Content-Type":"application/json",
+      },
+      body:JSON.stringify({
+        musicId : data.music_id
+      }),
+    })
+    const result = await response.json();
+    if(result.status === 200){
+      toast({
+        title: "Music Removed Successfully!",
+      })
+    }else{
+      toast({
+        title: "Unable to Remove Music!",
+      })
+    }
+
+  }
   return (
     <div className="flex w-full p-3 border-b border-gray-500 justify-between items-center">
       <div className="flex gap-3 text-lg items-center">
@@ -50,9 +72,9 @@ const MusicQueueCard = ({data}) => {
             <BiUpvote className="text-green-600 text-3xl "/>
             }
         </button>
-        <button>
+        {/* <button onClick={handleRemoveMusic}>
             <IoMdRemoveCircle className="text-red-600 text-3xl "/>
-        </button>
+        </button> */}
       </div>
     </div>
   )

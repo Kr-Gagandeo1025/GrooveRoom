@@ -57,9 +57,9 @@ const SideBarGrRoom = ({data}) => {
     useEffect(()=>{
         GetListOfPeople();
         const subscription = supabase.channel('persondata_changes').on('postgres_changes',
-            {event:'ALL',schema:'public',table:'persondata',filter:`in_room_id=eq.${data.joinedRoomId}`},
+            {event:'*',schema:'public',table:'persondata',filter:`in_room_id=eq.${data.joinedRoomId}`},
             (payload)=>{
-                console.log('Person added:',payload.new);
+                console.log('Person updated:',payload.new);
                 setPartyHoppers((prevHoppers)=>[...prevHoppers,payload.new]);
             }
         ).subscribe();
