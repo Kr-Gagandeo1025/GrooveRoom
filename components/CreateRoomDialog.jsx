@@ -33,6 +33,7 @@ export function CreateRoomDialog() {
     const { toast } = useToast()
     const handleRoomSave = async () => {
       // console.log(roomLimit);
+      const isPublic = document.getElementById("private_room").checked;
       if(roomName !== "" && roomDesc !== "" && roomLimit !== ""){
             setLoader(true);
             const response = await fetch("/api/create-room",{
@@ -45,6 +46,7 @@ export function CreateRoomDialog() {
                 room_desc:roomDesc,
                 room_limit:roomLimit,
                 user_id:userUid,
+                is_public:!isPublic,
               }),
             })
             const result = await response.json();
@@ -146,11 +148,14 @@ export function CreateRoomDialog() {
                     <SelectGroup>
                         <SelectItem value="5">5</SelectItem>
                         <SelectItem value="10">10</SelectItem>
-                        <SelectItem value="15">15</SelectItem>
-                        <SelectItem value="20">20</SelectItem>
                     </SelectGroup>
                 </SelectContent>
             </Select>
+          </div>
+          <div className="flex items-center gap-3">
+            {/* private room selector */}
+            <input type="checkbox" id="private_room" name="private_room" value="private_room" className="h-5 w-5"/>
+            <label htmlFor="private_room">Make Private Room</label>
           </div>
         </div>
         <DialogFooter>

@@ -23,6 +23,7 @@ export async function POST(req){
                 room_limit:Bodydata.room_limit,
                 room_name:Bodydata.room_name,
                 room_desc:Bodydata.room_desc,
+                is_public:Bodydata.is_public,
             }],{
                 headers:{
                     Authorization:`Bearer ${token}`,

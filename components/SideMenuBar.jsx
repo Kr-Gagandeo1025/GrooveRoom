@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { MdEmail, MdHomeMax, MdLogout } from 'react-icons/md';
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { useClerk } from '@clerk/nextjs';
+import { usePathname } from 'next/navigation';
 const SideMenuBar = () => {
+    const pathname = usePathname();
     const { signOut } = useClerk()
     const {firstname,emailId,profileimg} = useData();
   return (
@@ -23,17 +25,17 @@ const SideMenuBar = () => {
             </div>
         </div>
         <div className='flex flex-col items-start justify-center gap-10 text-2xl'>
-            <Link href="#" className='flex items-center gap-3'>
+            <Link href="/home" className={`flex items-center gap-3 ${pathname === '/home'?'':'text-gray-400'} transition-all ease-in-out duration-300`}>
                 <MdHomeMax className='text-3xl'/> Home
             </Link>
-            <Link href="#" className='flex items-center gap-3'>
+            <Link href="/rooms" className={`flex items-center gap-3 ${pathname === '/rooms'?'':'text-gray-400'} transition-all ease-in-out duration-300`}>
                 <FaArrowTrendUp className='text-3xl'/> Public Rooms
             </Link>
             <span className='flex items-center gap-3 cursor-pointer' onClick={() => signOut({ redirectUrl: '/' })}>
                 <MdLogout className='text-3xl'/> LogOut
             </span>
         </div>
-        <div className='flex self-baseline justify-baseline flex-col'>
+        <div className='flex self-baseline justify-baseline flex-col text-sm'>
             <span>welcome to grooveroom 🎉</span>
             <span>v1.0.1</span>
         </div>
