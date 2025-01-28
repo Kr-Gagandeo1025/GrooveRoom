@@ -37,7 +37,7 @@ const SideMenuBar = () => {
         </div>
         <div className='flex self-baseline justify-baseline flex-col text-sm'>
             <span>welcome to grooveroom 🎉</span>
-            <span>v1.0.1</span>
+            <span>v1.0.1 beta</span>
         </div>
     </div>
   )

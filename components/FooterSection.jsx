@@ -6,7 +6,7 @@ import { MdEmail } from 'react-icons/md'
 
 const FooterSection = () => {
   return (
-    <div className='mt-20 pb-4 text-white w-full flex items-center justify-center border-t-[0.5px] border-white pt-10'>
+    <div className='mt-20 pb-4 text-white w-full flex items-center justify-center border-t-[0.5px] border-white pt-10' id='contact'>
       <div className='flex flex-col items-start justify-center w-[70%] px-10'>
         <span className='text-4xl'>want to say something ?</span>
         <div className='flex items-center justify-between gap-3'>
@@ -21,12 +21,12 @@ const FooterSection = () => {
                 <Link href="#">
                     <CiYoutube className='hover:text-red-500 transition-all ease-in-out'/>
                 </Link>
-                <Link href="#">
+                <Link href="mailto:kumargagandeo9@gmail.com">
                     <MdEmail className='hover:text-gray-500 transition-all ease-in-out'/>
                 </Link>
             </span>
         </div>
-        <span>@kr-gagandeo - 2024</span>
+        <span>@kr-gagandeo - 2025</span>
       </div>
       <div className='flex w-[30%] flex-col items-end justify-center px-10'>
         <span className='text-2xl'>coffee please !?</span>

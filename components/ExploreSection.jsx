@@ -10,7 +10,7 @@ const ExploreSection = () => {
         <span className="inline-block from-black via-gray-300 to-white bg-[length:_400%_400%] p-0.5 bg-gradient-to-r rounded-full text-sm">
             <span className="block rounded-full bg-gray-900 px-5 py-3 text-white">✨ introducing public rooms.</span>
         </span>
-        <Link href="/sign-in" className='px-6 py-4 text-2xl bg-white text-black rounded-full cursor-pointer font-bold'>
+        <Link href="/rooms" className='px-6 py-4 text-2xl bg-white text-black rounded-full cursor-pointer font-bold'>
             <span className='flex items-center gap-2'><FaLockOpen/>Join a Public Room</span>
         </Link>
       </div>

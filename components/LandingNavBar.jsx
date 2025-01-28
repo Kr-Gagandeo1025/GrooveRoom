@@ -9,28 +9,21 @@ const LandingNavBar = ({isSigned}) => {
         <span className='text-2xl font-bold text-white'>GrooveRoom.</span>
       </div>
       <div className="px-4 py-3 flex text-white bg-white bg-opacity-5 backdrop-blur-xl items-center justify-center gap-10 rounded-2xl text-sm">
-        <Link className="group flex items-center justify-center flex-col gap-[1px]" href="#">
+        <Link className="group flex items-center justify-center flex-col gap-[1px]" href="#home">
           <span className="flex items-center gap-3 group-hover:text-gray-300">
             <MdHomeMax className="text-lg"/>
             Home
           </span>
           <span className="w-0 bg-gray-300 h-[1px] rounded-xl group-hover:w-full transition-all ease-in-out duration-500"></span>
         </Link>
-        <Link className="group flex items-center justify-center flex-col gap-[1px]" href="#">
-          <span className="flex items-center gap-3 group-hover:text-gray-300">
-            <MdOutlinePersonOutline className="text-lg"/>
-            About
-          </span>
-          <span className="w-0 bg-gray-300 h-[1px] rounded-xl group-hover:w-full transition-all ease-in-out duration-500"></span>
-        </Link>
-        <Link className="group flex items-center justify-center flex-col gap-[1px]" href="#">
+        <Link className="group flex items-center justify-center flex-col gap-[1px]" href="#explore">
           <span className="flex items-center gap-3 group-hover:text-gray-300">
             <FaRegCompass className="text-lg"/>
             Explore
           </span>
           <span className="w-0 bg-gray-300 h-[1px] rounded-xl group-hover:w-full transition-all ease-in-out duration-500"></span>
         </Link>
-        <Link className="group flex items-center justify-center flex-col gap-[1px]" href="#">
+        <Link className="group flex items-center justify-center flex-col gap-[1px]" href="#contact">
           <span className="flex items-center gap-3 group-hover:text-gray-300">
             <MdCall className="text-lg"/>
             Contact

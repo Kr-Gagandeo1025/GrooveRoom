@@ -2,7 +2,7 @@ import { BiPlay } from "react-icons/bi"
 
 const HeroSection = () => {
   return (
-    <div className='text-white w-screen h-screen items-center flex flex-col gap-4 pb-5'>
+    <div className='text-white w-screen h-screen items-center flex flex-col gap-4 pb-5' id="home">
         <span className="inline-block from-black via-gray-300 to-white bg-[length:_400%_400%] p-0.5 bg-gradient-to-r rounded-full text-sm">
             <span className="block rounded-full bg-gray-900 px-5 py-3 text-white">✨new era of playlist party just arrived.</span>
         </span>
